@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>異世界財富職業測驗</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Noto+Serif+TC:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --deep: #0d0a1a;
+    --parchment: #f5ead8;
+    --ink: #1a1208;
+    --crimson: #8b1a1a;
+    --emerald: #1a4a2e;
+    --sapphire: #1a2a5a;
+    --violet: #3a1a5a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--deep);
+    color: var(--parchment);
+    font-family: 'Noto Serif TC', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 40%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 45% 50%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 35%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 45%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(2px 2px at 55% 70%, rgba(201,168,76,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 35% 25%, rgba(201,168,76,0.3) 0%, transparent 100%),
+      radial-gradient(2px 2px at 85% 55%, rgba(201,168,76,0.4) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  /* Header */
+  .hero {
+    text-align: center;
+    padding: 60px 0 50px;
+    position: relative;
+  }
+
+  .hero::before {
+    content: '✦ ✦ ✦';
+    display: block;
+    color: var(--gold);
+    letter-spacing: 12px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    opacity: 0.7;
+  }
+
+  .hero-title {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(22px, 5vw, 36px);
+    font-weight: 900;
+    color: var(--gold-light);
+    letter-spacing: 3px;
+    line-height: 1.3;
+    text-shadow: 0 0 40px rgba(201,168,76,0.4);
+    margin-bottom: 12px;
+  }
+
+  .hero-subtitle {
+    font-size: 16px;
+    color: var(--parchment);
+    opacity: 0.7;
+    letter-spacing: 4px;
+    font-weight: 300;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 32px 0;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.5;
+  }
+  .divider-icon { color: var(--gold); font-size: 18px; }
+
+  /* Progress */
+  .progress-wrap {
+    margin-bottom: 32px;
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+  .progress-bar {
+    height: 4px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--gold), var(--gold-light));
+    border-radius: 2px;
+    transition: width 0.5s ease;
+    box-shadow: 0 0 10px rgba(201,168,76,0.5);
+  }
+
+  /* Question card */
+  .question-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    padding: 36px 32px;
+    margin-bottom: 20px;
+    position: relative;
+    animation: fadeIn 0.4s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .question-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(to right, transparent, var(--gold), transparent);
+    opacity: 0.4;
+  }
+
+  .question-number {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+
+  .question-text {
+    font-size: 17px;
+    line-height: 1.8;
+    color: var(--parchment);
+    margin-bottom: 28px;
+    font-weight: 400;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 12px; }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid rgba(201,168,76,0.15);
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: rgba(255,255,255,0.02);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .option:hover { border-color: rgba(201,168,76,0.5); }
+  .option:hover::before { opacity: 1; }
+
+  .option.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.08);
+  }
+  .option.selected::before { opacity: 1; }
+
+  .option-key {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--gold);
+    min-width: 20px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .option-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--parchment);
+    opacity: 0.85;
+  }
+
+  .option.selected .option-text { opacity: 1; }
+
+  /* Navigation */
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 28px;
+    gap: 16px;
+  }
+
+  .btn {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    padding: 12px 28px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: transparent;
+    border-radius: 2px;
+  }
+
+  .btn-prev {
+    border-color: rgba(201,168,76,0.3);
+    color: var(--gold);
+    opacity: 0.6;
+  }
+  .btn-prev:hover { opacity: 1; border-color: var(--gold); }
+
+  .btn-next {
+    border-color: var(--gold);
+    color: var(--deep);
+    background: var(--gold);
+    font-weight: 700;
+  }
+  .btn-next:hover { background: var(--gold-light); border-color: var(--gold-light); }
+  .btn-next:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  /* Result */
+  .result-wrap {
+    text-align: center;
+    animation: fadeIn 0.6s ease;
+  }
+
+  .result-emblem {
+    font-size: 72px;
+    margin: 20px 0;
+    filter: drop-shadow(0 0 20px rgba(201,168,76,0.5));
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .result-class {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(26px, 6vw, 42px);
+    font-weight: 900;
+    color: var(--gold-light);
+    text-shadow: 0 0 30px rgba(201,168,76,0.5);
+    margin-bottom: 8px;
+  }
+
+  .result-type {
+    font-size: 14px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 32px;
+  }
+
+  .result-desc {
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--parchment);
+    opacity: 0.85;
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+
+  .result-tips {
+    background: rgba(201,168,76,0.06);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    padding: 28px 32px;
+    text-align: left;
+    max-width: 560px;
+    margin: 0 auto 32px;
+  }
+
+  .result-tips h3 {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    margin-bottom: 16px;
+  }
+
+  .stat-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+  .stat-label {
+    font-family: 'Cinzel', serif;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    white-space: nowrap;
+    min-width: 68px;
+    padding-top: 2px;
+    opacity: 0.85;
+  }
+  .stat-val {
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--parchment);
+    opacity: 0.8;
+  }
+
+  .result-tips ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .result-tips li {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--parchment);
+    opacity: 0.8;
+    padding-left: 20px;
+    position: relative;
+  }
+  .result-tips li::before {
+    content: '◆';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-size: 8px;
+    top: 5px;
+  }
+
+  /* Tally */
+  .tally-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+    max-width: 400px;
+    margin: 0 auto 10px;
+  }
+  .tally-label {
+    font-family: 'Cinzel', serif;
+    font-size: 12px;
+    color: var(--gold);
+    width: 30px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .tally-bar-wrap {
+    flex: 1;
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .tally-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--gold), var(--gold-light));
+    border-radius: 3px;
+    transition: width 1s ease 0.3s;
+  }
+  .tally-count {
+    font-size: 12px;
+    color: var(--parchment);
+    opacity: 0.5;
+    width: 20px;
+    text-align: left;
+    flex-shrink: 0;
+  }
+
+  .tally-section {
+    margin: 24px 0 32px;
+  }
+
+  .btn-retry {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    letter-spacing: 3px;
+    padding: 14px 36px;
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold);
+    background: transparent;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s;
+    margin-top: 16px;
+  }
+  .btn-retry:hover { border-color: var(--gold); background: rgba(201,168,76,0.08); }
+
+  /* Screen toggle */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  @media (max-width: 600px) {
+    .question-card { padding: 24px 20px; }
+    .result-tips { padding: 20px; }
+    .option { padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Intro Screen -->
+  <div class="screen active" id="screen-intro">
+    <div class="hero">
+      <div class="hero-title">⚔️ 異世界財富職業測驗</div>
+      <div class="hero-subtitle">找出你的冒險者金錢性格</div>
+    </div>
+    <div class="divider"><span class="divider-icon">✦</span></div>
+    <div style="text-align:center; margin-bottom: 48px;">
+      <p style="font-size:15px; line-height:2; opacity:0.75; max-width:500px; margin:0 auto 32px;">
+        踏上異世界的旅途，你將遇見召喚獸、隊友、任務與財富的考驗。<br>
+        共 11 道選擇，揭示你的冒險者金錢性格。
+      </p>
+      <button class="btn btn-next" onclick="startQuiz()" style="font-size:15px; padding: 16px 48px;">開始冒險</button>
+    </div>
+  </div>
+
+  <!-- Quiz Screen -->
+  <div class="screen" id="screen-quiz">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span id="progress-text">第 1 題，共 11 題</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="question-card" id="q-card">
+      <div class="question-number" id="q-num">QUESTION 01</div>
+      <div class="question-text" id="q-text"></div>
+      <div class="options" id="q-options"></div>
+    </div>
+
+    <div class="nav">
+      <button class="btn btn-prev" id="btn-prev" onclick="prevQ()" style="display:none">← 上一題</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-next" id="btn-next" onclick="nextQ()" disabled>下一題 →</button>
+    </div>
+  </div>
+
+  <!-- Result Screen -->
+  <div class="screen" id="screen-result">
+    <div class="result-wrap">
+      <div class="divider" style="margin-bottom:32px"><span class="divider-icon">✦</span></div>
+      <div style="font-size:12px; letter-spacing:4px; color:var(--gold); opacity:0.6; margin-bottom:12px">YOUR ADVENTURER CLASS</div>
+      <div class="result-emblem" id="r-emblem"></div>
+      <div class="result-class" id="r-class"></div>
+      <div class="result-type" id="r-type"></div>
+      <div class="result-desc" id="r-desc"></div>
+      <div class="divider"><span class="divider-icon">✦</span></div>
+      <div class="result-tips" id="r-tips"></div>
+
+      <div class="tally-section">
+        <div style="font-size:11px; letter-spacing:3px; color:var(--gold); opacity:0.6; margin-bottom:16px; text-align:center">SCORE BREAKDOWN</div>
+        <div id="tally-bars"></div>
+      </div>
+
+      <button class="btn-retry" onclick="retryQuiz()">↺ 重新測驗</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const questions = [
+  {
+    text: "今天是你與夥伴踏上冒險旅途的日子，你要前去召喚在旅途上守護你的召喚獸。召喚獸與你性格相近，你覺得你會召喚到誰呢？",
+    options: [
+      { key: 'A', text: "勤勞且專心工作的矮人" },
+      { key: 'B', text: "熱情富創造力的小妖精" },
+      { key: 'C', text: "聰明又睿智的森林精靈" },
+      { key: 'D', text: "忠實又善良的德魯伊" },
+    ]
+  },
+  {
+    text: "你和一群人結伴踏上旅途，旅途上你覺得哪個隊友最麻煩？",
+    options: [
+      { key: 'A', text: "只想聊天不做事的吟遊詩人" },
+      { key: 'B', text: "眼界狹窄又現實的盜賊" },
+      { key: 'C', text: "固執淨化魔物、不懂變通的祭司" },
+      { key: 'D', text: "不通人性、只考慮效率的刺客" },
+    ]
+  },
+  {
+    text: "接到一個艱難任務，你會怎麼讓自己撐下去？",
+    options: [
+      { key: 'A', text: "不需要多想，直接動手開始，相信自己能解決。" },
+      { key: 'B', text: "不斷提醒自己任務完成後將獲得的報酬與榮耀。" },
+      { key: 'C', text: "反覆推演策略，直到對計畫感到有把握為止。" },
+      { key: 'D', text: "告訴夥伴你的目標，讓彼此互相督促提醒。" },
+    ]
+  },
+  {
+    text: "你喜歡怎麼鍛鍊？",
+    options: [
+      { key: 'A', text: "自己鍛鍊，在武藝上自行突破" },
+      { key: 'B', text: "拜師學藝，讓師父指點你" },
+      { key: 'C', text: "設立好目標後再彈性調整" },
+      { key: 'D', text: "集體活動，找人一起對練" },
+    ]
+  },
+  {
+    text: "在團隊中，你通常是哪種定位的人？",
+    options: [
+      { key: 'A', text: "專注於把眼前的任務完成，不達目的不罷休。" },
+      { key: 'B', text: "喜歡嘗試新奇的法術或開發沒人走過的探險路線。" },
+      { key: 'C', text: "喜歡鑽研背後的原理，甚至去圖書館查魔物圖鑑。" },
+      { key: 'D', text: "總是優先考慮隊友的感受，確保大家心情愉快。" },
+    ]
+  },
+  {
+    text: "面對一個極其困難、可能失敗的任務壓力時，你會：",
+    options: [
+      { key: 'A', text: "埋頭苦幹接更多小任務，用忙碌來避開擔憂。" },
+      { key: 'B', text: "開始做白日夢，設計各種美好的未來來迴避細節。" },
+      { key: 'C', text: "腦中推演一百種失敗場景，最後分析癱瘓、什麼都沒決定。" },
+      { key: 'D', text: "到處詢問隊友跟親友，受他們的意見影響。" },
+    ]
+  },
+  {
+    text: "結束一場屠龍大戰後，你最喜歡的放鬆方式是？",
+    options: [
+      { key: 'A', text: "去健身房或在公會找點體力活做，保持身體動能。" },
+      { key: 'B', text: "獨自冥想、感受大地的能量。" },
+      { key: 'C', text: "靜靜讀一本古老的魔法書或解開一個複雜魔方。" },
+      { key: 'D', text: "邀約夥伴們去酒館聚餐，感受彼此的連結。" },
+    ]
+  },
+  {
+    text: "什麼時候會讓你感到最有成就感？",
+    options: [
+      { key: 'A', text: "你的努力被公會認可，或是達成了自己設定的升級目標。" },
+      { key: 'B', text: "你用富有想像力、充滿風格的方式表達自己的時候。" },
+      { key: 'C', text: "你的智力受到挑戰，並成功解決高難度謎題時。" },
+      { key: 'D', text: "你成功救助、關心或拯救了某個受難的人。" },
+    ]
+  },
+  {
+    text: "面對昂貴的傳說級裝備時，你傾向基於什麼做決定？",
+    options: [
+      { key: 'A', text: "讓你感到舒適、有把握且自信的選擇。" },
+      { key: 'B', text: "你的直覺，以及這件裝備帶給你的「靈魂共鳴」。" },
+      { key: 'C', text: "你自己的研究、大師的開示，或是你認同的哲學。" },
+      { key: 'D', text: "其他冒險者在討論區怎麼說，以及大眾的評價。" },
+    ]
+  },
+  {
+    text: "關於投資新的冒險工坊或買裝備，誰最能影響你？",
+    options: [
+      { key: 'A', text: "簡短有力的戰報或能快速獲取的資訊。" },
+      { key: 'B', text: "社交媒體上你崇拜的冒險大師或最新的潮流趨勢。" },
+      { key: 'C', text: "你所敬佩的領域專家，那些充滿深度的專業分析。" },
+      { key: 'D', text: "你的冒險家庭、伴侶、換帖兄弟或社群。" },
+    ]
+  },
+  {
+    text: "屠龍獎勵到了！現在金幣多到用不完，要去遠方大陸旅行，你會買哪種船票？",
+    options: [
+      { key: 'A', text: "經濟艙就好，沒理由為了坐個船多花辛苦錢。" },
+      { key: 'B', text: "皇家頭等艙！一上船就要用魔法水晶發布在公告欄讓全公會知道。" },
+      { key: 'C', text: "商務艙，但會研究如何用積分升級，因為不想當冤大頭。" },
+      { key: 'D', text: "直接包下全船，讓所有家人朋友都能一起體驗最頂級的旅程。" },
+    ]
+  },
+];
+
+const results = {
+  A: {
+    emblem: '⚔️',
+    class: '騎士',
+    type: '工作者 · The Worker',
+    motto: '「努力工作讓你無往不利，緩慢且穩定地前進能讓你贏得最終的勝利。」',
+    traits: '勤奮、一貫、忠誠、以事實為導向、遵守規則',
+    weakness: '有時過於謹慎，容易因長時間工作而疲憊，可能因忙碌而忽略自己的理想',
+    spirit: '🐂 牛：耐力、勤奮',
+    desc: '你的財務態度是「能夠掙到錢，就去做」。你相信自己有價值，因為你付出了很多努力。你腳踏實地，靠個人努力、積蓄與穩健投資積累財富，安全感是你的核心需求。',
+    tips: [
+      '設立「緊急備用金」——3～6 個月生活費，讓壓力來臨時不必慌張動搖。',
+      '小心過度分析癱瘓：研究夠了就要出手，不願放棄現金可能讓你錯過成長機會。',
+      '偶爾犒賞自己——你辛苦賺來的錢，也值得用在有意義的體驗上。',
+      '注意工作與生活的平衡，避免「一直工作到倒下為止」的傾向。',
+    ]
+  },
+  B: {
+    emblem: '⚗️',
+    class: '鍊金術師',
+    type: '創造者 · The Creator',
+    motto: '「如果我能夠夢想，我就能做到。我能展現自己的成功。」',
+    traits: '思想開放、靈活、適應性強、果斷、樂觀、善於解決問題、敢冒險',
+    weakness: '匆忙做出決定、容易受快速致富計畫影響、可能純粹基於情緒做決定',
+    spirit: '🐒 猴子：詭計多端、投機取巧',
+    desc: '你的財務態度是「創造它，並加以體現」。你相信自己有能力創造想要的一切，金錢是實現夢想的燃料。你樂觀、富創意，擅長用企業家精神和獨創性開闢財富新路徑。',
+    tips: [
+      '建立「等待 48 小時」原則——大額決策前給自己冷靜期，確認是直覺還是衝動。',
+      '設立專屬的「夢想帳戶」，讓熱情有具體的財務支撐，而非隨性揮霍。',
+      '學習基本的數據分析，補強你不喜歡處理資料的弱點。',
+      '注意快速致富陷阱：你的樂觀是優勢，但也可能成為被利用的破口。',
+    ]
+  },
+  C: {
+    emblem: '📖',
+    class: '賢者',
+    type: '洞察者 · The Analyst',
+    motto: '「我能想辦法成功；教育是成功的關鍵。」',
+    traits: '視野開闊、有邏輯性、洞察力強、有智慧、有鑑別力、能獲取並運用知識',
+    weakness: '評判性、傾向過度思考、可能因為過於簡單或他人都在做而放棄一個好想法',
+    spirit: '🦊 狐狸：敏銳、敏捷',
+    desc: '你的財務態度是「勤思善學」。你相信聰明才智是成功的關鍵，凡事都要研究透徹才行動。你討厭盲從，靠思想領導、深度研究與精準判斷在競爭中智勝他人。',
+    tips: [
+      '設定「決策期限」——研究夠了就要行動，過度考慮會導致不必要的拖延。',
+      '建立投資 SOP，讓每次決策更有效率，不必從零開始分析。',
+      '試著接受「夠好就行動」——完美主義有時比行動更昂貴。',
+      '注意：別因為某件事「太簡單」或「大家都在做」就否定它的價值。',
+    ]
+  },
+  D: {
+    emblem: '🌟',
+    class: '勇者',
+    type: '關聯者 · The Connector',
+    motto: '「經由合作來獲得成功。照顧你所愛的人。」',
+    traits: '人際交往能力強、與他人有聯繫、良好的團隊合作者、理解、同情心、足智多謀',
+    weakness: '傾向把自己放在最後、可能容易受騙、可能對投資反應情緒化、自己無法接受他人的幫助',
+    spirit: '🐬 海豚：具有社會性、想要幫助他人',
+    desc: '你的財務態度是「積累它、建立它、與人合作」。你相信自己有價值是因為你對他人的關心。金錢對你來說是照顧所愛之人、建立深厚關係的橋樑，你透過門路、關係與穩健投資積累財富。',
+    tips: [
+      '學習說「我需要想一想」——給自己空間，不必立刻回應他人的財務需求。',
+      '建立個人財務目標，練習「先幫助自己」，才有足夠的餘力幫助別人。',
+      '設立清楚的借貸界線——善良是你的力量，但也需要保護自己不被利用。',
+      '練習接受他人的幫助，關聯者有時也需要允許自己被照顧。',
+    ]
+  }
+};
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+
+function startQuiz() {
+  document.getElementById('screen-intro').classList.remove('active');
+  document.getElementById('screen-quiz').classList.add('active');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+
+  document.getElementById('progress-text').textContent = `第 ${current + 1} 題，共 ${questions.length} 題`;
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('q-num').textContent = 'QUESTION ' + String(current + 1).padStart(2, '0');
+  document.getElementById('q-text').textContent = q.text;
+
+  const optWrap = document.getElementById('q-options');
+  optWrap.innerHTML = '';
+  q.options.forEach(opt => {
+    const div = document.createElement('div');
+    div.className = 'option' + (answers[current] === opt.key ? ' selected' : '');
+    div.innerHTML = `<span class="option-key">${opt.key}</span><span class="option-text">${opt.text}</span>`;
+    div.onclick = () => selectOption(opt.key);
+    optWrap.appendChild(div);
+  });
+
+  // Re-trigger animation
+  const card = document.getElementById('q-card');
+  card.style.animation = 'none';
+  void card.offsetWidth;
+  card.style.animation = '';
+
+  const btnNext = document.getElementById('btn-next');
+  const btnPrev = document.getElementById('btn-prev');
+  btnNext.disabled = answers[current] === null;
+  btnNext.textContent = current === questions.length - 1 ? '查看結果 ✦' : '下一題 →';
+  btnPrev.style.display = current === 0 ? 'none' : 'inline-block';
+}
+
+function selectOption(key) {
+  answers[current] = key;
+  document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.option').forEach(el => {
+    if (el.querySelector('.option-key').textContent === key) el.classList.add('selected');
+  });
+  document.getElementById('btn-next').disabled = false;
+}
+
+function nextQ() {
+  if (answers[current] === null) return;
+  if (current < questions.length - 1) {
+    current++;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function prevQ() {
+  if (current > 0) { current--; renderQuestion(); }
+}
+
+function showResult() {
+  const counts = { A: 0, B: 0, C: 0, D: 0 };
+  answers.forEach(a => { if (a) counts[a]++; });
+  const winner = Object.entries(counts).sort((x,y) => y[1] - x[1])[0][0];
+  const r = results[winner];
+
+  document.getElementById('r-emblem').textContent = r.emblem;
+  document.getElementById('r-class').textContent = r.class;
+  document.getElementById('r-type').textContent = r.type;
+  document.getElementById('r-desc').textContent = r.desc;
+
+  const tips = document.getElementById('r-tips');
+  tips.innerHTML =
+    '<div class="stat-row"><span class="stat-label">金錢口號</span><span class="stat-val">' + r.motto + '</span></div>' +
+    '<div class="stat-row"><span class="stat-label">優點</span><span class="stat-val">' + r.traits + '</span></div>' +
+    '<div class="stat-row"><span class="stat-label">壓力陷阱</span><span class="stat-val">' + r.weakness + '</span></div>' +
+    '<div class="stat-row"><span class="stat-label">精神動物</span><span class="stat-val">' + r.spirit + '</span></div>' +
+    '<div style="height:1px;background:rgba(201,168,76,0.15);margin:20px 0;"></div>' +
+    '<h3>⚔ 給你的理財裝備建議</h3>' +
+    '<ul>' + r.tips.map(function(t){ return '<li>' + t + '</li>'; }).join('') + '</ul>';
+
+  // Tally bars
+  const total = questions.length;
+  const labels = { A: '戰士', B: '詩人', C: '法師', D: '法師' };
+  const fullLabels = { A: '重裝戰士', B: '吟遊詩人', C: '首席大法師', D: '白魔法師' };
+  const tallyWrap = document.getElementById('tally-bars');
+  tallyWrap.innerHTML = Object.entries(counts).map(([k, v]) => `
+    <div class="tally-row">
+      <span class="tally-label">${k}</span>
+      <div class="tally-bar-wrap"><div class="tally-bar-fill" style="width:0%" data-pct="${Math.round(v/total*100)}"></div></div>
+      <span class="tally-count">${v}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('screen-quiz').classList.remove('active');
+  document.getElementById('screen-result').classList.add('active');
+
+  // Animate bars after render
+  setTimeout(() => {
+    document.querySelectorAll('.tally-bar-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 100);
+
+  document.getElementById('progress-fill').style.width = '100%';
+  document.getElementById('progress-pct').textContent = '100%';
+  document.getElementById('progress-text').textContent = '測驗完成！';
+}
+
+function retryQuiz() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  document.getElementById('screen-result').classList.remove('active');
+  document.getElementById('screen-quiz').classList.add('active');
+  renderQuestion();
+}
+</script>
+</body>
+</html>
